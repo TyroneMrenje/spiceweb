@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id         String   @id @default(uuid())
+  email      String   @unique
+  password   String   
+  username   String   @db.VarChar(30)
+  createdAt  DateTime @default(now())
+  orders     Order[]
+  role   Role   @default(USER)
+  
+
+@@index([email])
+}
+
+model Spice{
+  id         String  @id @default(uuid())
+  name       String
+  description String?  @db.VarChar(200) 
+  price       Float
+  spicecategories SpiceCategory[]  
+  SpiceType   SpiceType[]
+
+}
+
+model SpiceCategory{
+  id   String   @id  @default(uuid())
+  category_name String  
+  spices       Spice[]
+
+}
+
+model Order{
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  total     Float
+  Quantity   Int
+  createdAt DateTime @default(now())
+  status    Status   @default(PENDING)
+  Location  String   
+}
+
+model SpiceType{
+  id    String   @id @default(uuid())
+  type_name String
+  product  Spice  @relation(fields:[productId], references:[id])
+  productId String
+  imageurl  String
+}
+
+enum Role{
+  USER
+  ADMIN
+}
+
+
+enum Status{
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
