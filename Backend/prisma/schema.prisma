@@ -16,6 +16,7 @@ model User{
   createdAt  DateTime @default(now())
   orders     Order[]
   role   Role   @default(USER)
+  RefreshTokens RefreshToken[]
   
 
 @@index([email])
@@ -29,6 +30,8 @@ model Spice{
   spicecategories SpiceCategory[]  
   SpiceType   SpiceType[]
 
+
+  @@index([name])
 }
 
 model SpiceCategory{
@@ -55,6 +58,15 @@ model SpiceType{
   product  Spice  @relation(fields:[productId], references:[id])
   productId String
   imageurl  String
+}
+
+model RefreshToken{
+  id        String   @id @default(uuid())
+  token     String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
 }
 
 enum Role{

@@ -38,7 +38,6 @@ export class UserController{
           error: 'Invalid email or password' 
         });
       }
-
       const result = await userService.login(email, password);
 
       res.json({
